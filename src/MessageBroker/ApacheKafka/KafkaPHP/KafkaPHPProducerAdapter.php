@@ -48,11 +48,25 @@ class KafkaPHPProducerAdapter implements ProducerInterface
         return $this->producer->send();
     }
 
-    private function partitionStrategyRandom($partitions)
+    /**
+     * Temporary placeholder method for partition choice strategy
+     *
+     * @param  array $partitions
+     * @return int
+     */
+    private function partitionStrategyRandom(array $partitions)
     {
         return $partitions[array_rand($partitions)];
     }
 
+    /**
+     * Using the provided strategy, choose which partition to post messages onto
+     *
+     * @param  $topic
+     * @param  $strategy
+     * @throws ProducerException
+     * @return mixed
+     */
     private function choosePartition($topic, $strategy)
     {
         $name = 'partitionStrategy' . ucfirst($strategy);
