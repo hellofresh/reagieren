@@ -57,7 +57,7 @@ class RdKafkaConsumerAdapter implements ConsumerInterface
             throw new ConsumerException($message->errstr());
         }
 
-        return new Message($message->payload);
+        return new MessageCollection(new Message($message->payload));
     }
 
     /**

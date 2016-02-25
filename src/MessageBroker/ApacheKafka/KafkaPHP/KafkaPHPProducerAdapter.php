@@ -33,6 +33,7 @@ class KafkaPHPProducerAdapter implements ProducerInterface
     public function produce($topic, $payload, $configs = [])
     {
         $partition = $this->choosePartition(
+            $this->producer->getAvailablePartitions($topic),
             $topic,
             isset($configs['partition_strategy']) ? $configs['partition_strategy'] : self::PARTITION_STRATEGY_RANDOM
         );
@@ -67,10 +68,9 @@ class KafkaPHPProducerAdapter implements ProducerInterface
      * @throws ProducerException
      * @return mixed
      */
-    private function choosePartition($topic, $strategy)
+    private function choosePartition($partitions, $topic, $strategy)
     {
         $name = 'partitionStrategy' . ucfirst($strategy);
-        $partitions = $this->producer->getAvailablePartitions($topic);
 
         if (count($partitions) === 0) {
             throw new ProducerException(sprintf(
