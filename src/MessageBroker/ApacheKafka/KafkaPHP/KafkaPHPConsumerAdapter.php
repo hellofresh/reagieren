@@ -7,17 +7,49 @@ use HelloFresh\Reagieren\Message;
 use HelloFresh\Reagieren\ConsumerInterface;
 use HelloFresh\Reagieren\MessageCollection;
 
+/**
+ * Class KafkaPHPConsumerAdapter
+ * @package HelloFresh\Reagieren\MessageBroker\ApacheKafka\KafkaPHP
+ */
 class KafkaPHPConsumerAdapter implements ConsumerInterface
 {
+    /**
+     * @var Consumer
+     */
     private $consumer;
+
+    /**
+     * @var string
+     */
     private $topic;
+
+    /**
+     * @var int|null
+     */
     private $offset;
 
+    /**
+     * Default group to try if none specified
+     */
     const DEFAULT_GROUP = 'reagieren';
-    const DEFAULT_OFFSET = 0;
-    const DEFAULT_PARTITION = 'reagieren';
-    const DEFAULT_POLL_TIMER = 0;
 
+    /**
+     * Default offset to try if none specified
+     */
+    const DEFAULT_OFFSET = 0;
+
+    /**
+     * Default partition to try if none specified
+     */
+    const DEFAULT_PARTITION = 'reagieren';
+
+
+    /**
+     * KafkaPHPConsumerAdapter constructor.
+     * @param     $zookeeperHost
+     * @param int $zookeeperPort
+     * @param int $zookeeperTimeout
+     */
     public function __construct($zookeeperHost, $zookeeperPort = 2181, $zookeeperTimeout = 3000)
     {
         $this->consumer = Consumer::getInstance("$zookeeperHost:$zookeeperPort", $zookeeperTimeout);
@@ -47,6 +79,11 @@ class KafkaPHPConsumerAdapter implements ConsumerInterface
         return $messages;
     }
 
+    /**
+     * Fetch the new messages from the queue
+     *
+     * @return MessageCollection
+     */
     private function fetch()
     {
         $response = $this->consumer->fetch();
