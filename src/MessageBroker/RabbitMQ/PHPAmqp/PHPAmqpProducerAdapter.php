@@ -9,7 +9,7 @@ use PhpAmqpLib\Channel\AMQPChannel as Channel;
 use PhpAmqpLib\Message\AMQPMessage as Message;
 use PhpAmqpLib\Connection\AMQPStreamConnection as Producer;
 
-class PHPAmqpProducerAdapter implements ProducerInterface
+class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerInterface
 {
     /**
      * @var Producer
@@ -19,14 +19,15 @@ class PHPAmqpProducerAdapter implements ProducerInterface
     /**
      * @var Channel
      */
-    private $channel;
+    protected $channel;
 
     /**
     * Default configs
     *
     * @var array
     */
-    private $defaults = [
+    protected $defaults = [
+        'tag'           => '',
         'passive'       => false,
         'durable'       => false,
         'exclusive'     => false,
@@ -36,13 +37,6 @@ class PHPAmqpProducerAdapter implements ProducerInterface
         'ticket'        => null,
         'force_config'  => false,
     ];
-
-    /**
-     * Prevents reconfiguration
-     *
-     * @var bool
-     */
-    private $configured = false;
 
     /**
      * PHPAmqpProducerAdapter Constructor
@@ -73,33 +67,9 @@ class PHPAmqpProducerAdapter implements ProducerInterface
     public function produce($topic, $payload, $configs = [])
     {
         if (! $this->configured || $configs['force_config']) {
-            $this->setConfig($topic, new Dictionary($configs));
+            $configs = $this->setConfig($topic, new Dictionary($configs));
         }
 
-        $this->channel->basic_publish(new Message($payload), '', $topic);
-    }
-
-    /**
-     * Configure the producer
-     *
-     * @param              $topic
-     * @param MapInterface $configs
-     */
-    private function setConfig($topic, MapInterface $configs)
-    {
-        $configs = (new Dictionary($this->defaults))->concat($configs);
-
-        $this->channel->queue_declare(
-            $topic,
-            $configs['passive'],
-            $configs['durable'],
-            $configs['exclusive'],
-            $configs['auto_delete'],
-            $configs['nowait'],
-            $configs['arguments'],
-            $configs['ticket']
-        );
-
-        $this->configured = true;
+        $this->channel->basic_publish(new Message($payload), $configs->get('tag'), $topic);
     }
 }
