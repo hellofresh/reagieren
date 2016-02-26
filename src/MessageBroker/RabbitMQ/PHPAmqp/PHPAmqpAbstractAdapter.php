@@ -26,13 +26,13 @@ class PHPAmqpAbstractAdapter
 
         $this->channel->queue_declare(
             $topic,
-            $configs['passive'],
-            $configs['durable'],
-            $configs['exclusive'],
-            $configs['auto_delete'],
-            $configs['nowait'],
-            $configs['arguments'],
-            $configs['ticket']
+            $configs->get('passive'),
+            $configs->get('durable'),
+            $configs->get('exclusive'),
+            $configs->get('auto_delete'),
+            $configs->get('nowait'),
+            $configs->get('arguments'),
+            $configs->get('ticket')
         );
 
         $this->configured = true;

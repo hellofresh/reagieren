@@ -27,15 +27,15 @@ class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerI
     * @var array
     */
     protected $defaults = [
-        'tag'           => '',
-        'passive'       => false,
-        'durable'       => false,
-        'exclusive'     => false,
-        'auto_delete'   => true,
-        'nowait'        => false,
-        'arguments'     => null,
-        'ticket'        => null,
-        'force_config'  => false,
+        'tag'          => '',
+        'passive'      => false,
+        'durable'      => false,
+        'exclusive'    => false,
+        'auto_delete'  => true,
+        'nowait'       => false,
+        'arguments'    => null,
+        'ticket'       => null,
+        'force_config' => false,
     ];
 
     /**
