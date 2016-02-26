@@ -5,11 +5,10 @@ namespace HelloFresh\Reagieren;
 interface ConsumerInterface
 {
     /**
-     * @param string $topic The topic from where you want to consume
-     * @param null $offset Starting point
-     * @param int $count The number of messages to be consumed at once
-     * @param array $configs Specific configurations
-     * @return Message
+     * @param  string   $topic    The topic / channel to listen for messages on
+     * @param  callable $callback The callback to run when a message is received
+     * @param  array    $configs  Specific configurations
+     * @return void
      */
-    public function consume($topic, $offset = null, $count = 0, $configs = []);
+    public function consume($topic, callable $callback, array $configs = []);
 }

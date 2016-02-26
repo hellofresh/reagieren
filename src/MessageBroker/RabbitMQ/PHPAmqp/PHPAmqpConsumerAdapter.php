@@ -9,8 +9,9 @@ use HelloFresh\Reagieren\MessageCollection;
 use PhpAmqpLib\Channel\AMQPChannel as Channel;
 use PhpAmqpLib\Message\AMQPMessage as Message;
 use PhpAmqpLib\Connection\AMQPStreamConnection as Consumer;
+use HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp\PHPAmqpAbstractAdapter as AbstractAdapter;
 
-class PHPAmqpConsumerAdapter implements ConsumerInterface
+class PHPAmqpConsumerAdapter extends AbstractAdapter implements ConsumerInterface
 {
     /**
      * @var Producer
@@ -20,14 +21,14 @@ class PHPAmqpConsumerAdapter implements ConsumerInterface
     /**
      * @var Channel
      */
-    private $channel;
+    protected $channel;
 
     /**
     * Default configs
     *
     * @var array
     */
-    private $defaults = [
+    protected $defaults = [
         'tag'          => '',
         'passive'      => false,
         'durable'      => false,
@@ -63,7 +64,7 @@ class PHPAmqpConsumerAdapter implements ConsumerInterface
     /**
      * {@inheritdoc}
      */
-    public function consume($topic, $offset = null, $count = 0, $configs = [])
+    public function consume($topic, callable $callback, array $configs = [])
     {
         if (! $this->configured || $configs['force_config']) {
             $configs = $this->setConfig($topic, new Dictionary($configs), true);
@@ -76,11 +77,20 @@ class PHPAmqpConsumerAdapter implements ConsumerInterface
             $configs->get('no_ack'),
             $configs->get('exclusive'),
             $configs->get('nowait'),
-            $configs->get('callback'),
+            function ($message) use ($callback) {
+                return $this->callback($message, $callback);
+            },
             $configs->get('ticket'),
             $configs->get('arguments')
         );
 
-        return $this->channel; // hmmm
+        while (count($this->channel->callbacks)) {
+            $this->channel->wait();
+        }
+    }
+
+    private function callback($message, $callback)
+    {
+        return $callback(new Message($message->body));
     }
 }
