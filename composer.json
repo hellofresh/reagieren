@@ -25,7 +25,8 @@
     "phpunit/phpunit": "~4.8"
   },
   "suggest": {
-    "nmred/kafka-php": "Required to use the KafkaPHP Adapter"
+    "nmred/kafka-php": "Required to use the KafkaPHP Adapter",
+    "php-amqplib/php-amqplib": "Required to use the RabbitMQ Adapter"
   },
   "autoload": {
     "psr-4": {
