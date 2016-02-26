@@ -74,7 +74,7 @@ class KafkaPHPConsumerAdapter implements ConsumerInterface
 
         $messages = $this->fetch();
 
-        $this->offset += count($messages);
+        $this->offset += $messages->count();
 
         return $messages;
     }
