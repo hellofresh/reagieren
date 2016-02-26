@@ -2,8 +2,10 @@
 
 namespace HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp;
 
-use PhpAmqpLib\Channel\AMQPChannel as Channel;
+use Collections\Dictionary;
+use Collections\MapInterface;
 use HelloFresh\Reagieren\ProducerInterface;
+use PhpAmqpLib\Channel\AMQPChannel as Channel;
 use PhpAmqpLib\Message\AMQPMessage as Message;
 use PhpAmqpLib\Connection\AMQPStreamConnection as Producer;
 
@@ -31,8 +33,16 @@ class PHPAmqpProducerAdapter implements ProducerInterface
         'auto_delete'   => true,
         'nowait'        => false,
         'arguments'     => null,
-        'ticket'        => null
+        'ticket'        => null,
+        'force_config'  => false,
     ];
+
+    /**
+     * Prevents reconfiguration
+     *
+     * @var bool
+     */
+    private $configured = false;
 
     /**
      * PHPAmqpProducerAdapter Constructor
@@ -49,27 +59,36 @@ class PHPAmqpProducerAdapter implements ProducerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * PHPAmqpProducerAdapter Destructor
      */
-    public function produce($topic, $payload, $configs = [])
+    public function __destruct()
     {
-        $this->setConfig($topic, $configs);
-
-        $this->channel->basic_publish(new Message($payload), '', $topic);
-
         $this->channel->close();
         $this->connection->close();
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function produce($topic, $payload, $configs = [])
+    {
+        if (! $this->configured || $configs['force_config']) {
+            $this->setConfig($topic, new Dictionary($configs));
+        }
+
+        $this->channel->basic_publish(new Message($payload), '', $topic);
+    }
+
+    /**
      * Configure the producer
      *
-     * @param       $topic
-     * @param array $configs
+     * @param              $topic
+     * @param MapInterface $configs
      */
-    private function setConfig($topic, array $configs)
+    private function setConfig($topic, MapInterface $configs)
     {
-        $configs = array_merge($this->defaults, $configs);
+        $configs = (new Dictionary($this->defaults))->concat($configs);
+
         $this->channel->queue_declare(
             $topic,
             $configs['passive'],
@@ -80,5 +99,7 @@ class PHPAmqpProducerAdapter implements ProducerInterface
             $configs['arguments'],
             $configs['ticket']
         );
+
+        $this->configured = true;
     }
 }
