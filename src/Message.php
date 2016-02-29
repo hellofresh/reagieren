@@ -13,9 +13,11 @@ final class Message
      * Message constructor.
      * @param string $payload
      */
-    public function __construct($payload)
+    public function __construct($payload, $timestamp, $encoding)
     {
         $this->payload = $payload;
+        $this->timestamp = $timestamp;
+        $this->encoding = $encoding;
     }
 
     /**
@@ -24,6 +26,22 @@ final class Message
     public function getPayload()
     {
         return $this->payload;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTimestamp()
+    {
+        return $this->timestamp;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEncoding()
+    {
+        return $this->encoding;
     }
 
     /**
