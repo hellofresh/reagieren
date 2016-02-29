@@ -72,7 +72,7 @@ class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerI
         }
 
         $this->connection->channel($choice)->basic_publish(
-            new Message($payload),
+            new Message($payload, [ 'timestamp' => time() ]),
             $configs->get('tag'),
             $topic
         );

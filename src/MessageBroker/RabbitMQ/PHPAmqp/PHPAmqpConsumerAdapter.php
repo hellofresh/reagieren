@@ -5,10 +5,10 @@ namespace HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp;
 use Collections\ArrayList;
 use Collections\Dictionary;
 use Collections\MapInterface;
+use HelloFresh\Reagieren\Message;
 use HelloFresh\Reagieren\ConsumerInterface;
 use HelloFresh\Reagieren\MessageCollection;
 use PhpAmqpLib\Channel\AMQPChannel as Channel;
-use PhpAmqpLib\Message\AMQPMessage as Message;
 use PhpAmqpLib\Connection\AMQPStreamConnection as Consumer;
 use HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp\PHPAmqpAbstractAdapter as AbstractAdapter;
 
@@ -95,6 +95,10 @@ class PHPAmqpConsumerAdapter extends AbstractAdapter implements ConsumerInterfac
 
     private function callback($message, callable $callback)
     {
-        return $callback(new Message($message->body));
+        return $callback(new Message(
+            $message->getBody(),
+            $message->get('timestamp'),
+            $message->getContentEncoding()
+        ));
     }
 }
