@@ -64,10 +64,10 @@ class PHPAmqpConsumerAdapter extends AbstractAdapter implements ConsumerInterfac
     /**
      * {@inheritdoc}
      */
-    public function consume($topic, callable $callback, array $configs = [])
+    public function consume($topic, callable $callback, $configs = [])
     {
         if (! $this->configured || $configs['force_config']) {
-            $configs = $this->setConfig($topic, new Dictionary($configs), true);
+            $configs = $this->setConfig($topic, new Dictionary($configs));
         }
 
         $this->channel->basic_consume(

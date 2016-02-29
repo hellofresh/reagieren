@@ -10,5 +10,5 @@ interface ConsumerInterface
      * @param  array    $configs  Specific configurations
      * @return void
      */
-    public function consume($topic, callable $callback, array $configs = []);
+    public function consume($topic, callable $callback, $configs = []);
 }

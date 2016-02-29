@@ -64,7 +64,7 @@ class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerI
     /**
      * {@inheritdoc}
      */
-    public function produce($topic, $payload, array $configs = [])
+    public function produce($topic, $payload, $configs = [])
     {
         if (! $this->configured || $configs['force_config']) {
             $configs = $this->setConfig($topic, new Dictionary($configs));

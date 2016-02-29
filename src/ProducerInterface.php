@@ -10,5 +10,5 @@ interface ProducerInterface
      * @param  array  $configs Specific configurations
      * @return mixed
      */
-    public function produce($topic, $payload, array $configs = []);
+    public function produce($topic, $payload, $configs = []);
 }
