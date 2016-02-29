@@ -66,8 +66,12 @@ class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerI
      */
     public function produce($topic, $payload, $configs = [])
     {
+        if (! $configs instanceof MapInterface) {
+            $configs = new Dictionary($configs);
+        }
+
         if (! $this->configured || $configs['force_config']) {
-            $configs = $this->setConfig($topic, new Dictionary($configs));
+            $configs = $this->setConfig($topic, $configs);
         }
 
         $this->channel->basic_publish(new Message($payload), $configs->get('tag'), $topic);
