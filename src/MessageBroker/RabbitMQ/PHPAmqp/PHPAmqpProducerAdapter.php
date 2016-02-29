@@ -2,6 +2,7 @@
 
 namespace HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp;
 
+use Collections\ArrayList;
 use Collections\Dictionary;
 use Collections\MapInterface;
 use HelloFresh\Reagieren\ProducerInterface;
@@ -12,22 +13,13 @@ use PhpAmqpLib\Connection\AMQPStreamConnection as Producer;
 class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerInterface
 {
     /**
-     * @var Producer
-     */
-    private $connection;
-
-    /**
-     * @var Channel
-     */
-    protected $channel;
-
-    /**
     * Default configs
     *
     * @var array
     */
     protected $defaults = [
         'tag'          => '',
+        'channel'      => null,
         'passive'      => false,
         'durable'      => false,
         'exclusive'    => false,
@@ -49,7 +41,9 @@ class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerI
     public function __construct($host, $port = 5672, $username = 'guest', $password = 'guest')
     {
         $this->connection = new Producer($host, $port, $username, $password);
-        $this->channel = $this->connection->channel();
+        $this->channels = new ArrayList([
+            $this->connection->channel()
+        ]);
     }
 
     /**
@@ -57,7 +51,6 @@ class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerI
      */
     public function __destruct()
     {
-        $this->channel->close();
         $this->connection->close();
     }
 
@@ -74,6 +67,14 @@ class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerI
             $configs = $this->setConfig($topic, $configs);
         }
 
-        $this->channel->basic_publish(new Message($payload), $configs->get('tag'), $topic);
+        if (! $choice = $configs->get('channel')) {
+            $choice = $this->connection->get_free_channel_id();
+        }
+
+        $this->connection->channel($choice)->basic_publish(
+            new Message($payload),
+            $configs->get('tag'),
+            $topic
+        );
     }
 }

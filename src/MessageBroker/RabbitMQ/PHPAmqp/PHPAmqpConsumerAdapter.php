@@ -2,6 +2,7 @@
 
 namespace HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp;
 
+use Collections\ArrayList;
 use Collections\Dictionary;
 use Collections\MapInterface;
 use HelloFresh\Reagieren\ConsumerInterface;
@@ -14,22 +15,13 @@ use HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp\PHPAmqpAbstractAdapter a
 class PHPAmqpConsumerAdapter extends AbstractAdapter implements ConsumerInterface
 {
     /**
-     * @var Producer
-     */
-    private $connection;
-
-    /**
-     * @var Channel
-     */
-    protected $channel;
-
-    /**
     * Default configs
     *
     * @var array
     */
     protected $defaults = [
         'tag'          => '',
+        'channel'      => null,
         'passive'      => false,
         'durable'      => false,
         'exclusive'    => false,
@@ -58,7 +50,9 @@ class PHPAmqpConsumerAdapter extends AbstractAdapter implements ConsumerInterfac
     public function __construct($host, $port = 5672, $username = 'guest', $password = 'guest')
     {
         $this->connection = new Consumer($host, $port, $username, $password);
-        $this->channel = $this->connection->channel();
+        $this->channels = new ArrayList([
+            $this->connection->channel()
+        ]);
     }
 
     /**
@@ -74,7 +68,13 @@ class PHPAmqpConsumerAdapter extends AbstractAdapter implements ConsumerInterfac
             $configs = $this->setConfig($topic, $configs);
         }
 
-        $this->channel->basic_consume(
+        if (! $choice = $configs->get('channel')) {
+            $choice = $this->connection->get_free_channel_id();
+        }
+
+        $channel = $this->connection->channel($choice);
+
+        $channel->basic_consume(
             $topic,
             $configs->get('tag'),
             $configs->get('no_local'),
@@ -88,8 +88,8 @@ class PHPAmqpConsumerAdapter extends AbstractAdapter implements ConsumerInterfac
             $configs->get('arguments')
         );
 
-        while (count($this->channel->callbacks)) {
-            $this->channel->wait();
+        while (count($channel->callbacks)) {
+            $channel->wait();
         }
     }
 
