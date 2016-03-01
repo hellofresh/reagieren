@@ -93,6 +93,13 @@ class PHPAmqpConsumerAdapter extends AbstractAdapter implements ConsumerInterfac
         }
     }
 
+    /**
+     * Callback called in the consumer's callback that takes a callable $callback and runs it as a callback.
+     *
+     * @param           $message
+     * @param  callable $callback
+     * @return $callback
+     */
     private function callback($message, callable $callback)
     {
         return $callback(new Message(
