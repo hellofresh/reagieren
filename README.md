@@ -32,7 +32,7 @@ use HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp\PHPAmqpConsumerAdapter a
 $consumer = new Consumer('127.0.0.1', 5672, 'guest', 'guest');
 
 $callback = function (Message $message) {
-    echo 'Received ', $message->body, PHP_EOL;
+    echo 'Received ', $message->getPayload(), PHP_EOL;
 };
 
 $consumer->consume(
