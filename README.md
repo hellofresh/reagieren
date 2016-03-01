@@ -16,29 +16,31 @@ a unified way to access message brokers.
 Check this producer:
 
 ```php
-use HelloFresh\Reagieren\MessageBroker\ApacheKafka\RdKafka\RdKafkaProducerAdapter;
+use HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp\PHPAmqpProducerAdapter as Producer;
 
-$producer = new RdKafka\Producer();
-$producer->addBrokers("127.0.0.1");
+(new Producer('127.0.0.1', 5672, 'guest', 'guest'))->produce('example', 'Hello world this is a message');
 
-$queue = new RdKafkaProducerAdapter($producer);
-$queue->produce('test', 'message!!');
+echo 'Message sent!', PHP_EOL;
 ```
 
 Now check this consumer:
 
 ```php
-use HelloFresh\Reagieren\MessageBroker\ApacheKafka\RdKafka\RdKafkaConsumerAdapter;
+use HelloFresh\Reagieren\Message;
+use HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp\PHPAmqpConsumerAdapter as Consumer;
 
-$consumer = new RdKafka\Consumer();
-$consumer->addBrokers("127.0.0.1");
+$consumer = new Consumer('127.0.0.1', 5672, 'guest', 'guest');
 
-$queue = new RdKafkaConsumerAdapter($consumer);
+$callback = function (Message $message) {
+    echo 'Received ', $message->body, PHP_EOL;
+};
 
-while (true) {
-    $message = $queue->consume('test');
-    echo $message->getPayload();
-}
+$consumer->consume(
+    'example',
+    $callback
+);
+
+echo 'Listening...', PHP_EOL;
 ```
 
 As you can see it's just an adapter that will abstract all the complexity of setting technology specific problems.
