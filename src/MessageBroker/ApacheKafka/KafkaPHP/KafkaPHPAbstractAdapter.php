@@ -19,6 +19,13 @@ abstract class KafkaPHPAbstractAdapter
      */
     protected $configured = false;
 
+    /**
+     * Merge default config with provided configs, and set them on the connection
+     *
+     * @param              $topic
+     * @param MapInterface $configs
+     * @return Dictionary
+     */
     protected function setConfig($topic, MapInterface $configs)
     {
         $configs = (new Dictionary($this->defaults))->concat($configs);

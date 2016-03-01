@@ -10,6 +10,11 @@ use HelloFresh\Reagieren\Exception\ProducerException;
 
 class KafkaPHPProducerAdapter extends KafkaPHPAbstractAdapter implements ProducerInterface
 {
+    /**
+     * Default configs
+     *
+     * @var array
+     */
     private $defaults = [
         'require_ack'    => 0,
         'timeout'        => 100,
@@ -60,6 +65,9 @@ class KafkaPHPProducerAdapter extends KafkaPHPAbstractAdapter implements Produce
         return $this->connection->send();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function setConfig($topic, MapInterface $configs)
     {
         $configs = (new Dictionary($this->defaults))->concat($configs);

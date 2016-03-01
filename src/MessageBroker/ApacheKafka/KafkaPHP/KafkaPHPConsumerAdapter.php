@@ -10,6 +10,11 @@ use HelloFresh\Reagieren\ConsumerInterface;
 
 class KafkaPHPConsumerAdapter extends KafkaPHPAbstractAdapter implements ConsumerInterface
 {
+    /**
+     * Default configs
+     *
+     * @var array
+     */
     protected $defaults = [
         'group'           => 'default',
         'partition'       => 0,
@@ -20,11 +25,20 @@ class KafkaPHPConsumerAdapter extends KafkaPHPAbstractAdapter implements Consume
         'force_config'    => false,
     ];
 
-    public function __construct($host, $port = 2181)
+    /**
+     * KafkaConsumerAdapter Constructor
+     *
+     * @param $zookeeperHost
+     * @param $zookeeperPort
+     */
+    public function __construct($zookeeperHost, $zookeeperPort = 2181)
     {
-        $this->connection = Consumer::getInstance("$host:$port");
+        $this->connection = Consumer::getInstance("$zookeeperHost:$zookeeperPort");
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function consume($topic, callable $callback, $configs = [])
     {
         if (! $configs instanceof MapInterface) {
@@ -40,7 +54,13 @@ class KafkaPHPConsumerAdapter extends KafkaPHPAbstractAdapter implements Consume
         }
     }
 
-    private function fetch($topic, $callback)
+    /**
+     * Fetch the messages from the queue
+     *
+     * @param          $topic
+     * @param callable $callback
+     */
+    private function fetch($topic, callable $callback)
     {
         $response = $this->connection->fetch();
 
@@ -61,6 +81,9 @@ class KafkaPHPConsumerAdapter extends KafkaPHPAbstractAdapter implements Consume
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function setConfig($topic, MapInterface $configs)
     {
         $configs = (new Dictionary($this->defaults))->concat($configs);
