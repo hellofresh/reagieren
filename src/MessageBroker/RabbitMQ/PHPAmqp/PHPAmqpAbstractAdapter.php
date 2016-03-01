@@ -5,7 +5,7 @@ namespace HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp;
 use Collections\Dictionary;
 use Collections\MapInterface;
 
-class PHPAmqpAbstractAdapter
+abstract class PHPAmqpAbstractAdapter
 {
     /**
      * @var Producer
