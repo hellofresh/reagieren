@@ -16,7 +16,7 @@ final class Message
     public function __construct($payload, $timestamp, $encoding)
     {
         $this->payload = $payload;
-        $this->timestamp = new \DateTimeImmutable($timestamp);
+        $this->timestamp = new \DateTimeImmutable("@$timestamp");
         $this->encoding = $encoding;
     }
 
