@@ -11,14 +11,14 @@ final class Message
 
     /**
      * Message constructor.
-     * @param string $payload
-     * @param string $iso8601
-     * @param string $encoding
+     * @param string                $payload
+     * @param \DateTime    $timestamp
+     * @param string                $encoding
      */
-    public function __construct($payload, $iso8601, $encoding)
+    public function __construct($payload, \DateTime $timestamp, $encoding)
     {
         $this->payload = $payload;
-        $this->timestamp = new \DateTimeImmutable($iso8601);
+        $this->timestamp = $timestamp;
         $this->encoding = $encoding;
     }
 
@@ -31,7 +31,7 @@ final class Message
     }
 
     /**
-     * @return DateTimeImmutable
+     * @return DateTime
      */
     public function getTimestamp()
     {

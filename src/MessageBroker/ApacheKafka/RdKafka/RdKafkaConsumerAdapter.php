@@ -57,7 +57,11 @@ class RdKafkaConsumerAdapter implements ConsumerInterface
             throw new ConsumerException($message->errstr());
         }
 
-        return new Message($message->payload);
+        return new Message(
+              $message->payload,
+              \DateTime::createFromFormat("U", time()), // TODO: Kafka doesn't give you this information - can we serialise it into the message body?
+              null
+        );
     }
 
     /**

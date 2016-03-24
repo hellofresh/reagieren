@@ -73,7 +73,7 @@ class KafkaPHPConsumerAdapter extends KafkaPHPAbstractAdapter implements Consume
                 foreach ($messages as $message) {
                     $callback(new Message(
                         $message->getMessage(),
-                        time(), // TODO: Kafka doesn't give you this information - can we serialise it into the message body?
+                        \DateTime::createFromFormat("U", time()), // TODO: Kafka doesn't give you this information - can we serialise it into the message body?
                         null
                     ));
                 }
