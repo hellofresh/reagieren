@@ -22,6 +22,8 @@
     "easyframework/collections": "dev-master"
   },
   "require-dev": {
+    "php-amqplib/php-amqplib": "2.6.*",
+    "nmred/kafka-php": "^0.1.5",
     "phpunit/phpunit": "~4.8"
   },
   "suggest": {

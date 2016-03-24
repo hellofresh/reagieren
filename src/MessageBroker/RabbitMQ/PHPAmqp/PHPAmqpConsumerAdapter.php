@@ -104,7 +104,7 @@ class PHPAmqpConsumerAdapter extends AbstractAdapter implements ConsumerInterfac
     {
         return $callback(new Message(
             $message->getBody(),
-            $message->get('timestamp'),
+            \DateTime::createFromFormat("U", $message->get('timestamp')),
             $message->getContentEncoding()
         ));
     }
