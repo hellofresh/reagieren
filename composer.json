@@ -1,7 +1,7 @@
 {
   "name": "hellofresh/reagieren",
   "type": "library",
-  "description": "A set of adapters for message brokers",
+  "description": "A set of adapters for message brokers.",
   "keywords": [
     "queue",
     "message",
