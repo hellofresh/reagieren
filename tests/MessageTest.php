@@ -6,14 +6,14 @@ class MessageTest extends PHPUnit_Framework_TestCase
 {
     public function testMessageTimestampIsDateObject()
     {
-        $message = new Message('something', 'now', 'utf-8');
+        $message = new Message('something', new \DateTime('now'), 'utf-8');
 
-        $this->assertInstanceOf(\DateTimeImmutable::class, $message->getTimestamp());
+        $this->assertInstanceOf(\DateTime::class, $message->getTimestamp());
     }
 
     public function testCastingMessageToStringReturnsPayload()
     {
-        $message = new Message('something', 'now', 'utf-8');
+        $message = new Message('something', new \DateTime('now'), 'utf-8');
 
         $this->assertEquals('something', (string) $message);
     }
