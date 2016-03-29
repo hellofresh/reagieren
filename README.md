@@ -1,5 +1,9 @@
 # Reagieren
 
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/7b18de58d3ad44a28670caae83a9ba42)](https://www.codacy.com/app/italolelis/reagieren)
+
+[![Codacy Badge](https://api.codacy.com/project/badge/coverage/7b18de58d3ad44a28670caae83a9ba42)](https://www.codacy.com/app/italolelis/reagieren)
+
 Reagieren is a set of adapters for many different queues systems.
 
 Currently it's hard to have one unique interface to access RabbitMQ, ApacheKafka, IronMQ, etc...
