@@ -12,7 +12,7 @@ final class Message
     /**
      * Message constructor.
      * @param string                $payload
-     * @param \DateTime    $timestamp
+     * @param \DateTime             $timestamp
      * @param string                $encoding
      */
     public function __construct($payload, \DateTime $timestamp, $encoding)
