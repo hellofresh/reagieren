@@ -1,7 +1,6 @@
 # Reagieren
 
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/7b18de58d3ad44a28670caae83a9ba42)](https://www.codacy.com/app/italolelis/reagieren)
-
 [![Codacy Badge](https://api.codacy.com/project/badge/coverage/7b18de58d3ad44a28670caae83a9ba42)](https://www.codacy.com/app/italolelis/reagieren)
 
 Reagieren is a set of adapters for many different queues systems.
@@ -20,7 +19,7 @@ a unified way to access message brokers.
 Check this producer:
 
 ```php
-use HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp\PHPAmqpProducerAdapter as Producer;
+use HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp\Producer;
 
 (new Producer('127.0.0.1', 5672, 'guest', 'guest'))->produce('example', 'Hello world this is a message');
 
@@ -31,7 +30,7 @@ Now check this consumer:
 
 ```php
 use HelloFresh\Reagieren\Message;
-use HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp\PHPAmqpConsumerAdapter as Consumer;
+use HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp\Consumer;
 
 $consumer = new Consumer('127.0.0.1', 5672, 'guest', 'guest');
 

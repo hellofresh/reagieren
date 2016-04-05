@@ -6,27 +6,21 @@ use Collections\ArrayList;
 use Collections\Dictionary;
 use Collections\MapInterface;
 use HelloFresh\Reagieren\ProducerInterface;
-use PhpAmqpLib\Channel\AMQPChannel as Channel;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage as Message;
-use PhpAmqpLib\Connection\AMQPStreamConnection as Producer;
 
-class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerInterface
+class Producer extends AbstractAMPQAdapter implements ProducerInterface
 {
-    /**
-    * Default configs
-    *
-    * @var array
-    */
-    protected $defaults = [
-        'tag'          => '',
-        'channel'      => null,
-        'passive'      => false,
-        'durable'      => false,
-        'exclusive'    => false,
-        'auto_delete'  => true,
-        'nowait'       => false,
-        'arguments'    => null,
-        'ticket'       => null,
+    protected static $defaults = [
+        'tag' => '',
+        'channel' => null,
+        'passive' => false,
+        'durable' => false,
+        'exclusive' => false,
+        'auto_delete' => true,
+        'nowait' => false,
+        'arguments' => null,
+        'ticket' => null,
         'force_config' => false,
     ];
 
@@ -40,7 +34,9 @@ class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerI
      */
     public function __construct($host, $port = 5672, $username = 'guest', $password = 'guest')
     {
-        $this->connection = new Producer($host, $port, $username, $password);
+        $this->configs = new Dictionary(static::$defaults);
+
+        $this->connection = new AMQPStreamConnection($host, $port, $username, $password);
         $this->channels = new ArrayList([
             $this->connection->channel()
         ]);
@@ -59,21 +55,24 @@ class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerI
      */
     public function produce($topic, $payload, $configs = [])
     {
-        if (! $configs instanceof MapInterface) {
+        if (!$configs instanceof MapInterface) {
             $configs = new Dictionary($configs);
         }
 
-        if (! $this->configured || $configs['force_config']) {
-            $configs = $this->setConfig($topic, $configs);
+        $this->configs->concat($configs);
+
+        if (!$this->configured || $this->configs->get('force_config')) {
+            $this->configureChannels($topic, $this->channels, $this->configs);
         }
 
-        if (! $choice = $configs->get('channel')) {
+        if (!$choice = $this->configs->get('channel')) {
             $choice = $this->connection->get_free_channel_id();
         }
 
+        $now = new \DateTime();
         $this->connection->channel($choice)->basic_publish(
-            new Message($payload, [ 'timestamp' => time() ]),
-            $configs->get('tag'),
+            new Message($payload, ['timestamp' => $now->getTimestamp()]),
+            $this->configs->get('tag'),
             $topic
         );
     }
