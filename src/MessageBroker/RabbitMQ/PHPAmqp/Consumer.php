@@ -62,11 +62,11 @@ class Consumer extends AbstractAdapter implements ConsumerInterface
 
         $this->configs->concat($configs);
 
-        if (!$this->configured || $configs['force_config']) {
+        if (!$this->configured || $this->configs['force_config']) {
             $this->configureChannels($topic, $this->channels, $this->configs);
         }
 
-        if (!$choice = $configs->get('channel')) {
+        if (!$choice = $this->configs->get('channel')) {
             $choice = $this->connection->get_free_channel_id();
         }
 
@@ -74,16 +74,16 @@ class Consumer extends AbstractAdapter implements ConsumerInterface
 
         $channel->basic_consume(
             $topic,
-            $configs->get('tag'),
-            $configs->get('no_local'),
-            $configs->get('no_ack'),
-            $configs->get('exclusive'),
-            $configs->get('nowait'),
+            $this->configs->get('tag'),
+            $this->configs->get('no_local'),
+            $this->configs->get('no_ack'),
+            $this->configs->get('exclusive'),
+            $this->configs->get('nowait'),
             function ($message) use ($callback) {
                 return $this->callback($message, $callback);
             },
-            $configs->get('ticket'),
-            $configs->get('arguments')
+            $this->configs->get('ticket'),
+            $this->configs->get('arguments')
         );
 
         while (count($channel->callbacks)) {
