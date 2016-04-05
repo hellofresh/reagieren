@@ -2,19 +2,28 @@
 
 namespace HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp;
 
-use Collections\Dictionary;
 use Collections\MapInterface;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use Collections\VectorInterface;
+use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Connection\AMQPStreamConnection as Producer;
 
-abstract class PHPAmqpAbstractAdapter
+abstract class AbstractAMPQAdapter
 {
+    /**
+     * Default configs
+     *
+     * @var MapInterface
+     */
+    protected $configs;
+
     /**
      * @var Producer
      */
     protected $connection;
 
     /**
-     * @var ArrayList
+     * @var VectorInterface
      */
     protected $channels;
 
@@ -44,17 +53,18 @@ abstract class PHPAmqpAbstractAdapter
     {
         $channel = $this->connection->channel();
         $this->channels->add($channel);
+
         return $channel->getChannelId();
     }
 
     /**
      * Get the list of open channels
      *
-     * @return ArrayList
+     * @return VectorInterface
      */
     public function getChannels()
     {
-        return $this->channels->map(function ($channel) {
+        return $this->channels->map(function (AMQPChannel $channel) {
             return $channel->getChannelId();
         });
     }
@@ -63,13 +73,12 @@ abstract class PHPAmqpAbstractAdapter
      * Configure the producer
      *
      * @param              $topic
+     * @param VectorInterface $channels
      * @param MapInterface $configs
      */
-    protected function setConfig($topic, MapInterface $configs)
+    protected function configureChannels($topic, VectorInterface $channels, MapInterface $configs)
     {
-        $configs = (new Dictionary($this->defaults))->concat($configs);
-
-        foreach ($this->channels as $channel) {
+        $channels->each(function (AMQPChannel $channel) use ($topic, $configs) {
             $channel->queue_declare(
                 $topic,
                 $configs->get('passive'),
@@ -80,10 +89,8 @@ abstract class PHPAmqpAbstractAdapter
                 $configs->get('arguments'),
                 $configs->get('ticket')
             );
-        }
+        });
 
         $this->configured = true;
-
-        return $configs;
     }
 }
