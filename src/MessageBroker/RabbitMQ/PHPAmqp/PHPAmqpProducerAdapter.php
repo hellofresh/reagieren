@@ -47,14 +47,6 @@ class PHPAmqpProducerAdapter extends PHPAmqpAbstractAdapter implements ProducerI
     }
 
     /**
-     * PHPAmqpProducerAdapter Destructor
-     */
-    public function __destruct()
-    {
-        $this->connection->close();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function produce($topic, $payload, $configs = [])
