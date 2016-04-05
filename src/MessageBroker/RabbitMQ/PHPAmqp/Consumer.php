@@ -8,10 +8,10 @@ use Collections\MapInterface;
 use HelloFresh\Reagieren\ConsumerInterface;
 use HelloFresh\Reagieren\Message;
 use HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp\AbstractAMPQAdapter as AbstractAdapter;
-use PhpAmqpLib\Connection\AMQPStreamConnection as Consumer;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
-class ConsumerAMPQAdapter extends AbstractAdapter implements ConsumerInterface
+class Consumer extends AbstractAdapter implements ConsumerInterface
 {
     /**
      * Default configs
@@ -45,7 +45,7 @@ class ConsumerAMPQAdapter extends AbstractAdapter implements ConsumerInterface
     public function __construct($host, $port = 5672, $username = 'guest', $password = 'guest')
     {
         $this->configs = new Dictionary(static::$defaults);
-        $this->connection = new Consumer($host, $port, $username, $password);
+        $this->connection = new AMQPStreamConnection($host, $port, $username, $password);
         $this->channels = new ArrayList([
             $this->connection->channel()
         ]);

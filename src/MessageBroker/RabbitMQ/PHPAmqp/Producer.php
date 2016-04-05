@@ -6,10 +6,10 @@ use Collections\ArrayList;
 use Collections\Dictionary;
 use Collections\MapInterface;
 use HelloFresh\Reagieren\ProducerInterface;
-use PhpAmqpLib\Connection\AMQPStreamConnection as Producer;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage as Message;
 
-class ProducerAMPQAdapter extends AbstractAMPQAdapter implements ProducerInterface
+class Producer extends AbstractAMPQAdapter implements ProducerInterface
 {
     protected static $defaults = [
         'tag' => '',
@@ -36,7 +36,7 @@ class ProducerAMPQAdapter extends AbstractAMPQAdapter implements ProducerInterfa
     {
         $this->configs = new Dictionary(static::$defaults);
 
-        $this->connection = new Producer($host, $port, $username, $password);
+        $this->connection = new AMQPStreamConnection($host, $port, $username, $password);
         $this->channels = new ArrayList([
             $this->connection->channel()
         ]);
