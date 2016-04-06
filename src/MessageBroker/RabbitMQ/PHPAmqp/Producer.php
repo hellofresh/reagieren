@@ -43,14 +43,6 @@ class Producer extends AbstractAMPQAdapter implements ProducerInterface
     }
 
     /**
-     * PHPAmqpProducerAdapter Destructor
-     */
-    public function __destruct()
-    {
-        $this->connection->close();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function produce($topic, $payload, $configs = [])

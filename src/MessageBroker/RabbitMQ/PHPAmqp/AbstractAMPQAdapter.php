@@ -3,6 +3,7 @@
 namespace HelloFresh\Reagieren\MessageBroker\RabbitMQ\PHPAmqp;
 
 use Collections\MapInterface;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Collections\VectorInterface;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection as Producer;
@@ -32,6 +33,16 @@ abstract class AbstractAMPQAdapter
      * @var bool
      */
     protected $configured = false;
+
+    /**
+     * PHPAmqpProducerAdapter Destructor
+     */
+    public function __destruct()
+    {
+        if ($this->connection instanceof AMQPStreamConnection) {
+            $this->connection->close();
+        }
+    }
 
     /**
      * Add a new channel
