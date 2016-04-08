@@ -56,3 +56,30 @@ For instance to put something on a kafka queue we need to:
 5. Send the payload
 
 But you don't care about partitions, topics, queue balancing, so that's really awesome!
+
+### Producing to multiple brokers
+
+You can produce messages to multiple brokers using `Composite\Producer`, see this example:
+
+```php
+use HelloFresh\Reagieren\MessageBroker\Composite\Producer;
+
+//... setup RabbitMQ broker
+$rabbitProducer = ...;
+
+//... setup Kafka broker
+$kafkaBroker = ...;
+
+$config = [
+    'kafka_php' => [
+        'topic' => 'example'
+    ],
+    'rabbit_mq' => [
+        'topic' => 'example'
+    ]
+];
+
+(new Producer($rabbitProducer, $kafkaBroker))->produce($payload, $config);
+
+echo 'Message sent!', PHP_EOL;
+```
