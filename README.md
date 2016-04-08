@@ -70,16 +70,16 @@ $rabbitProducer = ...;
 //... setup Kafka broker
 $kafkaBroker = ...;
 
-$config = [
+$configs = [
     'kafka_php' => [
-        'topic' => 'example'
+        'topic' => 'example_topic'
     ],
     'rabbit_mq' => [
-        'topic' => 'example'
+        'topic' => 'example_exchange'
     ]
 ];
 
-(new Producer($rabbitProducer, $kafkaBroker))->produce($payload, $config);
+(new Producer($rabbitProducer, $kafkaBroker))->produce($payload, $configs);
 
 echo 'Message sent!', PHP_EOL;
 ```
