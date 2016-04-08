@@ -19,7 +19,7 @@
   ],
   "require": {
     "php": ">=5.4.0",
-    "easyframework/collections": "dev-master"
+    "easyframework/collections": "5.0.0-beta"
   },
   "require-dev": {
     "php-amqplib/php-amqplib": "2.6.*",
