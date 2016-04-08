@@ -5,14 +5,14 @@ namespace HelloFresh\Reagieren\MessageBroker\ApacheKafka\RdKafka;
 use HelloFresh\Reagieren\ConsumerInterface;
 use HelloFresh\Reagieren\Exception\ConsumerException;
 use HelloFresh\Reagieren\Message;
-use RdKafka\Consumer;
+use RdKafka\Consumer as RdKafkaConsumer;
 use RdKafka\ConsumerTopic;
 use RdKafka\Queue;
 
-class RdKafkaConsumerAdapter implements ConsumerInterface
+class Consumer implements ConsumerInterface
 {
     /**
-     * @var Consumer
+     * @var RdKafkaConsumer
      */
     private $consumer;
 
@@ -28,9 +28,9 @@ class RdKafkaConsumerAdapter implements ConsumerInterface
 
     /**
      * RdKafkaAdapter constructor.
-     * @param Consumer $consumer
+     * @param RdKafkaConsumer $consumer
      */
-    public function __construct(Consumer $consumer)
+    public function __construct(RdKafkaConsumer $consumer)
     {
         $this->consumer = $consumer;
     }
@@ -58,9 +58,10 @@ class RdKafkaConsumerAdapter implements ConsumerInterface
         }
 
         return new Message(
-              $message->payload,
-              \DateTime::createFromFormat("U", time()), // TODO: Kafka doesn't give you this information - can we serialise it into the message body?
-              null
+            $message->payload,
+            \DateTime::createFromFormat("U", time()),
+            // TODO: Kafka doesn't give you this information - can we serialise it into the message body?
+            null
         );
     }
 

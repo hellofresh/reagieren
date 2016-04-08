@@ -3,20 +3,20 @@
 namespace HelloFresh\Reagieren\MessageBroker\ApacheKafka\RdKafka;
 
 use HelloFresh\Reagieren\ProducerInterface;
-use RdKafka\Producer;
+use RdKafka\Producer as RdKafkaProducer;
 
-class RdKafkaProducerAdapter implements ProducerInterface
+class Producer implements ProducerInterface
 {
     /**
-     * @var Producer
+     * @var RdKafkaProducer
      */
     private $producer;
 
     /**
      * RdKafkaAdapter constructor.
-     * @param Producer $producer
+     * @param RdKafkaProducer $producer
      */
-    public function __construct(Producer $producer)
+    public function __construct(RdKafkaProducer $producer)
     {
         $this->producer = $producer;
     }
@@ -27,5 +27,13 @@ class RdKafkaProducerAdapter implements ProducerInterface
 
         $topic = $this->producer->newTopic($topic, isset($configs['topic']) ? $configs['topic'] : null);
         $topic->produce($partition, 0, $payload);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'rd_kafka';
     }
 }

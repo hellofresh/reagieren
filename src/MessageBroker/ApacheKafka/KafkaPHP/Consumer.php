@@ -2,13 +2,13 @@
 
 namespace HelloFresh\Reagieren\MessageBroker\ApacheKafka\KafkaPHP;
 
-use Kafka\Consumer;
+use Kafka\Consumer as KafkaConsumer;
 use Collections\Dictionary;
 use Collections\MapInterface;
 use HelloFresh\Reagieren\Message;
 use HelloFresh\Reagieren\ConsumerInterface;
 
-class KafkaPHPConsumerAdapter extends KafkaPHPAbstractAdapter implements ConsumerInterface
+class Consumer extends KafkaPHPAbstractAdapter implements ConsumerInterface
 {
     /**
      * Default configs
@@ -26,14 +26,14 @@ class KafkaPHPConsumerAdapter extends KafkaPHPAbstractAdapter implements Consume
     ];
 
     /**
-     * KafkaConsumerAdapter Constructor
+     * KafkaConsumer Constructor
      *
      * @param $zookeeperHost
      * @param $zookeeperPort
      */
     public function __construct($zookeeperHost, $zookeeperPort = 2181)
     {
-        $this->connection = Consumer::getInstance("$zookeeperHost:$zookeeperPort");
+        $this->connection = KafkaConsumer::getInstance("$zookeeperHost:$zookeeperPort");
     }
 
     /**
