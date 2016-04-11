@@ -21,9 +21,9 @@ class Producer implements CompositeProducerInterface
      *
      * @param array $producers
      */
-    public function __construct(...$producers)
+    public function __construct()
     {
-        $this->producers = new ArrayList($producers);
+        $this->producers = new ArrayList(func_get_args());
     }
 
     /**
