@@ -25,7 +25,7 @@ class Producer extends AbstractAMPQAdapter implements ProducerInterface
     ];
 
     /**
-     * PHPAmqpProducerAdapter Constructor
+     * PHPAmqp Producer Constructor
      *
      * @param $host
      * @param $port
@@ -67,5 +67,14 @@ class Producer extends AbstractAMPQAdapter implements ProducerInterface
             $this->configs->get('tag'),
             $topic
         );
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'rabbit_mq';
     }
 }

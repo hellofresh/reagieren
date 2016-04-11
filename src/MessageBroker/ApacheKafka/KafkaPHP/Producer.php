@@ -2,13 +2,13 @@
 
 namespace HelloFresh\Reagieren\MessageBroker\ApacheKafka\KafkaPHP;
 
-use Kafka\Produce;
 use Collections\Dictionary;
 use Collections\MapInterface;
-use HelloFresh\Reagieren\ProducerInterface;
 use HelloFresh\Reagieren\Exception\ProducerException;
+use HelloFresh\Reagieren\ProducerInterface;
+use Kafka\Produce;
 
-class KafkaPHPProducerAdapter extends KafkaPHPAbstractAdapter implements ProducerInterface
+class Producer extends KafkaPHPAbstractAdapter implements ProducerInterface
 {
     /**
      * Default configs
@@ -16,10 +16,10 @@ class KafkaPHPProducerAdapter extends KafkaPHPAbstractAdapter implements Produce
      * @var array
      */
     private $defaults = [
-        'require_ack'    => 0,
-        'timeout'        => 100,
+        'require_ack' => 0,
+        'timeout' => 100,
         'stream_options' => [],
-        'force_config'   => false,
+        'force_config' => false,
     ];
 
     const PARTITION_STRATEGY_RANDOM = 'random';
@@ -41,11 +41,11 @@ class KafkaPHPProducerAdapter extends KafkaPHPAbstractAdapter implements Produce
      */
     public function produce($topic, $payload, $configs = [])
     {
-        if (! $configs instanceof MapInterface) {
+        if (!$configs instanceof MapInterface) {
             $configs = new Dictionary($configs);
         }
 
-        if (! $this->configured || $configs->get('force_config')) {
+        if (!$this->configured || $configs->get('force_config')) {
             $configs = $this->setConfig($topic, $configs);
         }
 
@@ -63,6 +63,14 @@ class KafkaPHPProducerAdapter extends KafkaPHPAbstractAdapter implements Produce
         }
 
         return $this->connection->send();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'kafka_php';
     }
 
     /**
