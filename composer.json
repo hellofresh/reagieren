@@ -19,10 +19,10 @@
   ],
   "require": {
     "php": ">=5.4.0",
+    "php-amqplib/php-amqplib": "2.6.*",
     "easyframework/collections": "v5.0.0"
   },
   "require-dev": {
-    "php-amqplib/php-amqplib": "2.6.*",
     "nmred/kafka-php": "^0.1.5",
     "phpunit/phpunit": "~4.8",
     "codacy/coverage": "dev-master"
