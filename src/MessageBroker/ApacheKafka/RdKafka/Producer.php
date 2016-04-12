@@ -24,7 +24,7 @@ class Producer implements ProducerInterface
     public function produce($topic, $payload, $configs = [])
     {
         $partition = isset($configs['partition']) ? $configs['partition'] : RD_KAFKA_PARTITION_UA;
-        if (isset($configs['config']) {
+        if (isset($configs['config'])) {
             $topic = $this->producer->newTopic($topic, $configs['config']);
         } else {
             $topic = $this->producer->newTopic($topic);
