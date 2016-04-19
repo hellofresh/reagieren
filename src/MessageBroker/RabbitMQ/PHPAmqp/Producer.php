@@ -41,6 +41,18 @@ class Producer extends AbstractAMPQAdapter implements ProducerInterface
             $this->connection->channel()
         ]);
     }
+    
+    /**
+     * @return bool
+     */
+    public function isConnected()
+    {
+        if (!isset($this->connection)) {
+            return false;
+        }
+        
+        return $this->connection->isConnected();
+    }    
 
     /**
      * {@inheritdoc}
