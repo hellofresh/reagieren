@@ -39,4 +39,16 @@ class Producer implements ProducerInterface
     {
         return 'rd_kafka';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isConnected()
+    {
+        if (!isset($this->producer) || $this->producer->getOutQLen() < 0) {
+            return false;
+        }
+
+        return true;
+    }
 }
