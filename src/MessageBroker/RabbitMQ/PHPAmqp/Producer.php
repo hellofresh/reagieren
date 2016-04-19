@@ -38,10 +38,10 @@ class Producer extends AbstractAMPQAdapter implements ProducerInterface
 
         $this->connection = new AMQPStreamConnection($host, $port, $username, $password);
         $this->channels = new ArrayList([
-            $this->connection->channel()
+            $this->connection->channel(),
         ]);
     }
-    
+
     /**
      * @return bool
      */
@@ -50,9 +50,9 @@ class Producer extends AbstractAMPQAdapter implements ProducerInterface
         if (!isset($this->connection)) {
             return false;
         }
-        
+
         return $this->connection->isConnected();
-    }    
+    }
 
     /**
      * {@inheritdoc}
@@ -80,7 +80,6 @@ class Producer extends AbstractAMPQAdapter implements ProducerInterface
             $topic
         );
     }
-
 
     /**
      * {@inheritdoc}
