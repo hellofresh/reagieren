@@ -17,4 +17,9 @@ interface ProducerInterface
      * @return string
      */
     public function getName();
+
+    /**
+     * @return bool
+     */
+    public function isConnected();
 }

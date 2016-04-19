@@ -43,7 +43,7 @@ class Producer extends AbstractAMPQAdapter implements ProducerInterface
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function isConnected()
     {
